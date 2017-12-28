@@ -1,0 +1,72 @@
+'HS3 Script 2014-08-07
+Dim FileName as string
+Dim fso as object
+Dim f as object
+Dim Time = Now
+Sub Main(ByVal Parms As Object)
+
+Dim Address1 As String = "www.google.com"
+Dim Address2 As String = "www.homeseer.com"
+Dim Address3 As String = "www.bbc.co.uk"
+Dim ReturnVal As Integer
+Dim Internet_Alive
+	Internet_Alive = hs.DeviceValueByName ("Internet Alive")
+	hs.SetDeviceValueByName ("Internet Alive",99)
+			FileName = ("c:\data\IP_Test.txt")
+			Const ForReading = 1, ForWriting = 2, ForAppending = 8
+			fso = CreateObject("Scripting.FileSystemObject")
+			f = fso.OpenTextFile(FileName, ForAppending, True)
+			Time=Now
+
+	ReturnVal = hs.ping(Address1)
+
+If ReturnVal = 26118 Then
+    
+    hs.writelogEx("Script: IP Test", "---------- First Host: " & Address1 & " OFFLINE, trying second host", "#FF0000")
+			Time=Now
+			f.writeline ((Time)&";"&";"&"IP_Test;"&"...............First Host Failed")
+    ReturnVal = hs.ping(Address2)
+    
+    If ReturnVal = 26118 Then
+
+        hs.writelogEx("Script: IP Test", "---------- Second Host: " & Address2 & " also OFFLINE, trying third host", "#FF0000")
+			Time=Now
+			f.writeline ((Time)&";"&";"&"IP_Test;"&"...............Second Host Failed")
+        ReturnVal = hs.ping(Address3)
+                
+        If ReturnVal = 26118 Then
+
+            hs.writelogEx("Script: IP Test", "---------- First Host OFFLINE, second host OFFLINE, third Host: " & Address3 & " also OFFLINE, resetting modem", "#FF0000")
+			Time=Now
+			f.writeline ((Time)&";"&";"&"IP_Test;"&"...............Third Host Failed")
+            Call Reset("")
+
+        Else
+
+        hs.writelogEx("Script: IP Test", "---------- First Host OFFLINE, second host OFFLINE, third host: " & Address3 & " ONLINE - No modem reset", "#008000")
+
+        End If
+    Else
+    
+    hs.writelogEx("Script: IP Test", "---------- First Host: " & Address1 & " OFFLINE, second host (" & Address2 & ") appears ONLINE - No modem reset", "#008000")
+
+    End If
+
+End If
+	hs.TriggerEvent ("Internet_Alive_ON") 'Set "Internet Alive" virtual device to ON
+
+ReturnVal = Nothing
+	Time=Now
+	hs.WriteLog("IPTest","Internet Down for: " & hs.TimerValue("Internet Down").ToString())
+	f.writeline ((Time)&";"&";"&"IP_Test;"&"...............Internet Down for: " & hs.TimerValue("Internet Down").ToString())
+	hs.waitsecs (1)
+	f.close()	'Close the log file
+End Sub
+
+	Sub Reset(ByVal Parms As Object)
+	Time=Now
+	f.writeline ((Time)&";"&";"&"IP_Test;"&"...............Resetting Modem & Router")
+	hs.TriggerEvent ("Internet_Alive_OFF") 'Set "Internet Alive" virtual device to OFF
+	Dim CableDevAdd As String = "Q8"
+	hs.TriggerEvent ("Modem_Reset")
+End Sub

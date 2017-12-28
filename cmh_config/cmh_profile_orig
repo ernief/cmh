@@ -1,0 +1,27 @@
+#---------- CMH edits below this line ----------------------------------
+# cmh_profile - version 1.0
+#-----------------------------------------------------------------------
+# specify locations for HS3 installation and the CMH administrative directories
+#-----------------------------------------------------------------------
+export CMH_HS3_DIR=/usr/local/HomeSeer
+
+# Define backup directories: primary and secondary locations
+export CMH_BACKUP_DIR1=/mnt/usb1/cmh_backups
+export CMH_BACKUP_DIR2=/home/homeseer/cmh_backups
+
+export CMH_BIN_DIR=/home/homeseer/cmh_bin
+export CMH_CONFIG_DIR=/home/homeseer/cmh_config
+export CMH_DOWNLOAD_DIR=/home/homeseer/cmh_downloads
+export CMH_GDRIVE_DOWN_DIR=/home/homeseer/cmh_gdrive_down
+export CMH_GDRIVE_UP_DIR=/home/homeseer/cmh_gdrive_up
+export CMH_HSEVENT_DIR=/home/homeseer/cmh_hsevents
+export CMH_HSSCRIPTS_DIR=/home/homeseer/cmh_hsscripts
+export CMH_LOG_DIR=/home/homeseer/cmh_logs
+export CMH_RELEASE_DIR=/home/homeseer/cmh_releases
+export CMH_TMP_DIR=/home/homeseer/cmh_tmp
+export CMH_WORKSPACE_DIR=/home/homeseer/cmh_workspace
+
+#-----------------------------------------------------------------------
+# look in the ~/cmh_bin directory for commands
+#-----------------------------------------------------------------------
+export PATH=.:$CMH_BIN_DIR:$PATH

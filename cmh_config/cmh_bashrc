@@ -1,0 +1,14 @@
+# .bash_aliases -- CMH version 1.0
+# This file is assumed to be sourced by the .bashrc file
+
+# set any bash options here:
+#       set command line editing to use vi
+set -o vi
+
+
+# define the some command aliases:
+alias r='fc -s'
+alias ll='ls -l'
+alias la='ls -A'
+alias l='ls -CF'
+alias updateAliases="/bin/vi ~/.bash_aliases; source ./.bash_aliases"

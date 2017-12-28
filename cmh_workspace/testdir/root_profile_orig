@@ -1,0 +1,17 @@
+# ~/.profile: executed by Bourne-compatible login shells.
+
+if [ "$BASH" ]; then
+  if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+  fi
+fi
+
+mesg n
+#---------- CMH edits below this line ----------------------------------
+# CMH .profile additions:  version 1.0
+#-----------------------------------------------------------------------
+CMH_PROFILE=~homeseer/cmh_config/cmh_profile
+if [ -f  "$CMH_PROFILE" ]
+then
+	.  $CMH_PROFILE
+fi

@@ -1,0 +1,32 @@
+#These are the files that were changed manually during initial setup
+/home/homeseer/.bash_aliases
+/home/homeseer/.profile
+/home/homeseer/.profile_orig
+/home/homeseer/cmh_config/cmh_profile
+/root/.profile
+/root/.profile_orig
+/root/.bashrc
+/root/.bashrc_orig
+/etc/fstab
+/etc/fstag_orig
+/etc/ssh/sshd_config
+/etc/ssh/sshd_config-orig
+#
+# these are the directories that were created or renamed or linked
+/mnt/usb1/
+/mnt/usb1/cmh_backups/
+/home/homeseer/cmh_backups/
+/home/homeseer/cmh_bin/
+/home/homeseer/cmh_config/
+/home/homeseer/cmh_downloads/
+/home/homeseer/cmh_gdrive_down
+/home/homeseer/cmh_gdrive_up
+/home/homeseer/cmh_hsevents/
+/home/homeseer/cmh_hsscripts/
+/home/homeseer/cmh_logs/
+/home/homeseer/cmh_releases/
+/home/homeseer/cmh_tmp/
+/home/homeseer/cmh_workspace/
+/usr/local/HomeSeer/
+/usr/local/HomeSeer_318/
+
