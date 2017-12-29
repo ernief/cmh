@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 # restoreFullBackup.sh v1.2
 # restoreFullBackup.sh - restore an entire HomeSeer directory from a tar.gz file
 #
@@ -22,9 +21,10 @@ set -x
 #
 # Records the restart in a log file
 
-VERSION="1.2"
+VERSION="1.3"
 CMD_NAME="$0"
 CMD_ARGS="$*"
+DEBUG_FLG=""
 
 MY_LOG_FILE=/home/homeseer/cmh_logs/HSrestore.log
 
@@ -42,8 +42,9 @@ function Fcn_check_usage
 	TAR_FILENAME=""
 	CREATE_DEST_DIR="no"
 
-USAGE="Usage: $CMD_NAME [-hvc][-s srcDir][-d destDir][-f baseTarFileName]\" \n\
+USAGE="Usage: $CMD_NAME [-hDvc][-s srcDir][-d destDir][-f baseTarFileName]\" \n\
            -h help\n\
+           -D debug - echo any file changing commands and do not reboot\n\
            -v print script version number\n\
            -c create destination directory if it does not exist\n\
            -s dir where the tar file is found (default: $SRC_DIR)\n\
@@ -55,11 +56,16 @@ Example usage\n\
     $CMD_NAME -d /usr/local/homeseer_357 -f 357beforeImperihome\n"
 
 # Parse command line options.
-	while getopts "hvcs:d:f:" OPT; do
+	OPTIND=1
+	while getopts "hDvcs:d:f:" OPT; do
 	    case "$OPT" in
 	        h)
 	            echo $USAGE
 	            exit 0
+	            ;;
+	        D)
+	            DEBUG_FLG="yes"
+		    set -x
 	            ;;
 	        v)
 	            echo "$CMD_NAME version $VERSION"
@@ -99,7 +105,12 @@ Example usage\n\
 	then
 	    if [ "$CREATE_DEST_DIR" = "yes" ]
 	    then
-	        mkdir $CREATE_DEST_DIR
+	        if [ "$DEBUG_FLG" = "yes" ]
+		then
+	        	echo mkdir $CREATE_DEST_DIR
+		else
+	        	mkdir $CREATE_DEST_DIR
+		fi
 	    else
 	        echo "$CMD_NAME: destination directory does not exist. Use -c option to create it"
 	        echo $USAGE
@@ -122,16 +133,21 @@ echo TAR_FILENAME = $TAR_FILENAME
 	    exit 1
 	fi
 }
+#--------------------------------------------------------------------------------------
 function Fcn_execed_work
 {
 
 # do the restore and make directory contents relative to SRC_DIR
 	CURR_DATE=`date`
 	echo "$CURR_DATE: cd $DEST_DIR; tar -xvzf $SRC_DIR/$TAR_FILENAME" >> $LOGFILE
-	echo "$CURR_DATE: cd $DEST_DIR; tar -xvzf $SRC_DIR/$TAR_FILENAME"
 
-	cd $DEST_DIR
-	tar -xvzf $SRC_DIR/$TAR_FILENAME
+	if [ "$DEBUG_FLG" = "yes" ]
+	then
+		echo cd $DEST_DIR
+		echo tar -xvzf $SRC_DIR/$TAR_FILENAME
+	else
+		cd $DEST_DIR; tar -xvzf $SRC_DIR/$TAR_FILENAME
+	fi
 } #end function Fcn_execed_work
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
@@ -145,17 +161,30 @@ then
 	echo "$0: Rebooting system in 20 sec"
 	sleep 20s
 			# now do work that may have conflicted with a running HS and its children
-	shift		# pass any args on for processing
+	shift		# skip the ReCURSion____ flag, and pass remaining args for processing
+	Fcn_check_usage $*
 
-	Fcn_check_usage
-
-	Fcn_execed_work $*
+			# now do the work during the exec'ed call
+	Fcn_execed_work
 			# always end in a reboot. Otherwise, HS won't restart.
 	echo "$0: Rebooting now"
 	date
-#EJF	reboot
-else
-	Fcn_check_usage
 
-echo	exec $THIS_SCRIPT ReCURSion___ $CMD_ARGS > ${MY_LOG_FILE}
+	if [ "$DEBUG_FLG" = "yes" ]
+	then
+		echo reboot
+	else
+		reboot
+	fi
+else
+
+	Fcn_check_usage $*
+
+	if [ "$DEBUG_FLG" = "yes" ]
+	then
+		echo exec $THIS_SCRIPT ReCURSion___ $CMD_ARGS > ${MY_LOG_FILE}
+		$THIS_SCRIPT ReCURSion___ $CMD_ARGS > ${MY_LOG_FILE}
+	else
+		exec $THIS_SCRIPT ReCURSion___ $CMD_ARGS > ${MY_LOG_FILE}
+	fi
 fi
